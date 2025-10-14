@@ -54,11 +54,13 @@ async function runSlackReminder(env: Env) {
 			const reactions = totalReactions(msg);
 			if (reactions >= 2) { skipped++; continue; }
 
-			if (await shouldSkipByTimeOrRecentThread(env, msg.ts)) { skipped++; continue; }
+			const isYongMessage = await shouldSkipByTimeOrRecentThread(env, msg.ts)
+			if (isYongMessage) { skipped++; continue; }
 
 			const mention = await buildUsergroupMention(env).catch(() => "");
 			const body = `${mention ? mention + " " : ""}${env.REMINDER_TEXT || "Auto-reminder: add at least 2 reactions (emoji :+1::skin-tone-5: | :question: ) to confirm the review."}`;
 
+			console.log("sending for message", text);
 			await slackFetch(env, "chat.postMessage", {
 				channel: env.SLACK_CHANNEL_ID,
 				thread_ts: msg.ts,

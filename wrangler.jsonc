@@ -50,7 +50,7 @@
 	// "services": [{ "binding": "MY_SERVICE", "service": "my-service" }]
 	"triggers": {
 		"crons": [
-			"* * * * *"
+			"*/30 * * * *"
 		]
 	}
 }
