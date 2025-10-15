@@ -44,21 +44,15 @@ markdown
 
 ## ⚙️ Переменные окружения
 
-| Переменная | Описание | Обязательно |
-|-------------|-----------|--------------|
-| `SLACK_BOT_TOKEN` | OAuth токен бота | ✅ |
-| `SLACK_CHANNEL_ID` | ID канала (например, `C04ABC123`) | ✅ |
-| `REMINDER_TEXT` | Текст напоминания | ❌ |
-| `GROUP_HANDLE` | handle группы для упоминания (без `@`) | ❌ |
-| `WORK_TZ` | Таймзона (по умолчанию `Europe/Kyiv`) | ❌ |
+| Переменная | Описание                                              | Обязательно |
+|-------------|-------------------------------------------------------|--------------|
+| `CLOUDFLARE_API_TOKEN` | CF токен аккаунта которым будет осуществляться деплой | ✅ |
+| 
 
-### Пример `.env` (для локального теста)
+### Пример `.env` (для деплоя через [wrangler](https://developers.cloudflare.com/workers/cli-wrangler/install-update)
 ```
-SLACK_BOT_TOKEN=xoxb-1234567890
-SLACK_CHANNEL_ID=C04ABC123
-REMINDER_TEXT="Пожалуйста, добавьте минимум 2 реакции для ревью"
-GROUP_HANDLE=frontend_team
-WORK_TZ=Europe/Kyiv
+CLOUDFLARE_API_TOKEN="************"
+
 ```
 
 ### 🧠 Как получить SLACK_CHANNEL_ID<
@@ -80,30 +74,25 @@ npm install -g wrangler
 ```bash
 mkdir slack-review-reminder
 cd slack-review-reminder
-wrangler init --type=module
+wrangler init
 ```
 Скопируйте в src/worker.ts содержимое основного скрипта.
 
-3. Настройка wrangler.toml
-``` toml
-name = "slack-review-reminder"
-main = "src/worker.ts"
-compatibility_date = "2025-10-14"
-
-[triggers]
-crons = [ "0 * * * *" ] # Запуск каждый час
-
-[vars]
-WORK_TZ = "Europe/Kyiv"
+3. Настройка [wrangler.jsonc](wrangler.jsonc)
+```json
+{
+"vars": {
+         "SLACK_BOT_TOKEN":"xoxb-******",
+         "SLACK_CHANNEL_ID":"C0*****",
+         "REMINDER_TEXT":"Auto-reminder: add at least 2 reactions (emoji :+1::skin-tone-5: | :question: ) to confirm the review.",
+         "GROUP_HANDLE":"****",
+         "REMINDER_INTERVAL":3,
+         "WORK_TZ":"Europe/Kyiv"
+     }
+ }
 ```
-4. Добавление секретов
-```bash
-wrangler secret put SLACK_BOT_TOKEN
-wrangler secret put SLACK_CHANNEL_ID
-wrangler secret put REMINDER_TEXT
-wrangler secret put GROUP_HANDLE
-```
-5. Деплой
+5. 
+6. Деплой
 ```bash
 wrangler deploy
 ```
@@ -136,8 +125,6 @@ curl https://<your-worker-subdomain>.workers.dev/health
 wrangler dev --test-scheduled
 ```
 ```bash
-
-# или ручной HTTP вызов:
 wrangler dev
 curl -X POST http://localhost:8787/run
 ```
