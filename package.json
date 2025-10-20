@@ -7,7 +7,7 @@
 		"dev": "wrangler dev --test-scheduled",
 		"start": "wrangler dev --test-scheduled",
 		"cf-typegen": "wrangler types",
-        "test-request": " curl -X POST http://localhost:8787/run"
+        "test-request": " curl -X GET http://localhost:8787/run"
 	},
 	"devDependencies": {
 		"typescript": "^5.5.2",

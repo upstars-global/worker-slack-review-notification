@@ -20,12 +20,12 @@ const FIVE_DAYS_SEC = 5 * 24 * 60 * 60;
 export default {
 	async fetch(req: Request, env: Env, ctx: ExecutionContext) {
 		const url = new URL(req.url);
-		if (url.pathname === "/run" && req.method === "POST") {
+		if (url.pathname === "/run" && req.method === "GET") {
 			const res = await runSlackReminder(env);
 			return json(res);
 		}
 		if (url.pathname === "/health") return new Response("ok");
-		return new Response("Use POST /run", { status: 404 });
+		return new Response("Use GET /run", { status: 404 });
 	},
 
 	// Cron-триггер (см. wrangler.toml → triggers.crons)
@@ -51,10 +51,14 @@ async function runSlackReminder(env: Env) {
 			const text = (msg.text ?? "").trim();
 			if (!text || !/\bcode review\b/i.test(text)) { skipped++; continue; }
 
+			console.log({text});
+
 			const reactions = totalReactions(msg);
+			console.log({reactions});
 			if (reactions >= 2) { skipped++; continue; }
 
 			const isYongMessage = await shouldSkipByTimeOrRecentThread(env, msg.ts)
+			console.log({isYongMessage});
 			if (isYongMessage) { skipped++; continue; }
 
 			const mention = await buildUsergroupMention(env).catch(() => "");

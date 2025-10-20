@@ -27,7 +27,6 @@
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
 	 */
 	 "vars": {
-         "SLACK_BOT_TOKEN":"xoxb-306012128243-6748507684167-dt1l9lMwbABkyIuMptItkmyJ",
          "SLACK_CHANNEL_ID":"C093N0B57E3",
          "REMINDER_TEXT":"Auto-reminder: add at least 2 reactions (emoji :+1::skin-tone-5: | :question: ) to confirm the review.",
          "GROUP_HANDLE":"unity_front_team",
