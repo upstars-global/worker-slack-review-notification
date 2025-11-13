@@ -103,7 +103,7 @@ async function shouldSkipByTimeOrRecentThread(env: Env, threadTs: string): Promi
 	const hour = localNow.getHours();
 
 	if (day === 0 || day === 6) return true;       // выходные
-	if (hour >= 20 || hour < 8) return true;       // ночь
+	if (hour >= 19 || hour < 9) return true;       // ночь
 
 	// Проверим последнюю активность треда
 	let cursor: string | undefined;
@@ -136,6 +136,7 @@ async function slackFetch<T = any>(
 	const url = new URL(`https://slack.com/api/${method}`);
 	let init: RequestInit;
 
+	console.log("env.SLACK_BOT_TOKEN", env.SLACK_BOT_TOKEN);
 	if (httpMethod === "GET") {
 		for (const [k, v] of Object.entries(body)) if (v !== undefined) url.searchParams.set(String(k), String(v));
 		init = {
